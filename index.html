@@ -4,7 +4,7 @@
   <meta name='dmca-site-verification' content='TDV1L0owQnRFRHZYQXMvWTBIS2dyZkRiL3d6Y1Y3TmdlKzI4RjBGZzVJND01' />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lưu lại ký ức</title>
+  <title>Thanh Xuân Của Chúng Ta</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     /* ===== RESET & BASE ===== */
@@ -228,6 +228,8 @@
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .member-card:hover {
       transform: translateY(-6px);
@@ -237,11 +239,20 @@
       width: 100%; height: 180px;
       object-fit: cover;
       display: block;
+      flex-shrink: 0;
+    }
+    .member-photo {
+      width: 100%; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 22px; font-weight: 700;
+      flex-shrink: 0;
     }
     .member-info {
       padding: 10px;
       text-align: center;
       font-size: 13px; font-weight: 600; color: #444;
+      flex-shrink: 0;
     }
     .member-hover {
       position: absolute; inset: 0;
@@ -280,7 +291,6 @@
     }
     .show-more-btn:hover { background: #2c6bb5; color: #fff; }
     .members-extra { display: none; }
-    .members-extra.open { display: contents; }
 
     /* ===== GALLERY ===== */
     #gallery { background: #e8f4fd; }
@@ -721,12 +731,12 @@
 <section id="home">
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1 class="hero-title">Kỷ Niệm Lớp 10 Của Chúng Ta</h1>
-    <p class="hero-subtitle">"Những Tháng Đẹp Đẽ Năm Nay"</p>
+    <h1 class="hero-title">Thanh Xuân Của Chúng Ta</h1>
+    <p class="hero-subtitle">"Những năm tháng rực rỡ dưới mái trường thân yêu"</p>
     <a href="#members" class="hero-btn">Khám phá kỷ niệm</a>
   </div>
   <div class="scroll-indicator">
-    Vuốt Xuống
+    SCROLL
     <div class="scroll-dot"></div>
   </div>
 </section>
@@ -803,7 +813,7 @@
     </div>
     <!-- Extra members hidden by default -->
     <div class="member-card members-extra fade-in">
-      <img src="https://placehold.co/200x240/e0f7fa/006064?text=An+Bình" alt="An Bình" />
+      <div class="member-photo" style="background:#e0f7fa;color:#006064;">An Bình</div>
       <div class="member-info">An Bình</div>
       <div class="member-hover">
         <p>Hội hoạ<br/>Vẽ siêu đẹp 🎨</p>
@@ -811,7 +821,7 @@
       </div>
     </div>
     <div class="member-card members-extra fade-in">
-      <img src="https://placehold.co/200x240/fce4ec/880e4f?text=Linh+Hà" alt="Linh Hà" />
+      <div class="member-photo" style="background:#fce4ec;color:#880e4f;">Linh Hà</div>
       <div class="member-info">Linh Hà</div>
       <div class="member-hover">
         <p>Toán giỏi nhất lớp<br/>Luôn giải đề nhanh 🧮</p>
@@ -819,7 +829,7 @@
       </div>
     </div>
     <div class="member-card members-extra fade-in">
-      <img src="https://placehold.co/200x240/f3e5f5/4a148c?text=Cậu+Cả" alt="Cậu Cả" />
+      <div class="member-photo" style="background:#f3e5f5;color:#4a148c;">Cậu Cả</div>
       <div class="member-info">Cậu Cả</div>
       <div class="member-hover">
         <p>Hài hước nhất<br/>Cả lớp ai cũng yêu 😂</p>
@@ -1165,8 +1175,17 @@ function seekMusic(e) {
 // ===== MEMBERS TOGGLE =====
 function toggleMembers(btn) {
   const extras = document.querySelectorAll('.members-extra');
-  const isOpen = extras[0].classList.contains('open');
-  extras.forEach(el => el.classList.toggle('open', !isOpen));
+  const isOpen = btn.dataset.open === '1';
+  extras.forEach(el => {
+    if (isOpen) {
+      el.style.display = 'none';
+      el.style.flexDirection = '';
+    } else {
+      el.style.display = 'flex';
+      el.style.flexDirection = 'column';
+    }
+  });
+  btn.dataset.open = isOpen ? '0' : '1';
   btn.textContent = isOpen ? 'Xem thêm ∨' : 'Thu gọn ∧';
 }
 
@@ -1252,6 +1271,5 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.fade-in, .tl-item').forEach(el => observer.observe(el));
 </script>
-<script src="protection.js"></script>
 </body>
 </html>
