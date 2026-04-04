@@ -174,7 +174,7 @@
       white-space: nowrap;
       pointer-events: none;
     `;
-    toast.innerHTML = "🔒 Nội dung này được bảo vệ bản quyền";
+    toast.innerHTML = "🔒 HUY | Source được bảo mật bởi DMCA";
     document.body.appendChild(toast);
     return toast;
   }
