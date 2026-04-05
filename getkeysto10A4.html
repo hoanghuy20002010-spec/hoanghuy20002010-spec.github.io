@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Danh sách Key – Thanh Xuân</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #f0f7ff;
+      padding: 40px 24px;
+      color: #1a2d45;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 42px;
+      color: #2c6bb5;
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 15px;
+      color: #666;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .legend {
+      display: flex; gap: 20px; justify-content: center;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+    }
+    .dot { width: 14px; height: 14px; border-radius: 50%; }
+    .dot-unused { background: #4caf50; }
+    .dot-used   { background: #e0e0e0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 1000px;
+      margin: 0 auto 40px;
+    }
+    .key-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 3px 14px rgba(44,107,181,0.10);
+      border: 2px solid #e3edf8;
+      display: flex; align-items: center; gap: 14px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .key-card:hover { box-shadow: 0 6px 22px rgba(44,107,181,0.18); }
+    .key-num {
+      font-size: 11px; font-weight: 800;
+      color: #aab8c8;
+      min-width: 22px;
+    }
+    .key-icon { font-size: 22px; }
+    .key-value {
+      font-family: 'Courier New', monospace;
+      font-size: 16px; font-weight: 700;
+      letter-spacing: 2px;
+      color: #2c6bb5;
+      flex: 1;
+    }
+    .key-status {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #e8f5e9;
+      color: #388e3c;
+      white-space: nowrap;
+    }
+    .key-status.used {
+      background: #f5f5f5;
+      color: #bbb;
+      text-decoration: line-through;
+    }
+    .key-owner {
+      position: absolute;
+      bottom: 6px; right: 14px;
+      font-size: 10px; color: #bbb;
+      font-style: italic;
+    }
+
+    .actions {
+      text-align: center;
+      display: flex; gap: 12px; justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .btn {
+      padding: 11px 28px;
+      border-radius: 30px;
+      border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #2c6bb5; color: #fff; }
+    .btn-primary:hover { background: #1a4d8f; }
+    .btn-danger { background: #fff; color: #e53935; border: 2px solid #e53935; }
+    .btn-danger:hover { background: #fdecea; }
+    .btn-export { background: #fff; color: #2c6bb5; border: 2px solid #2c6bb5; }
+    .btn-export:hover { background: #e3edf8; }
+
+    .stats {
+      text-align: center;
+      margin-bottom: 28px;
+      font-size: 14px; color: #666;
+    }
+    .stats strong { color: #2c6bb5; font-size: 22px; }
+
+    .note {
+      max-width: 600px; margin: 0 auto 20px;
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px; line-height: 1.7;
+      color: #555;
+    }
+    .note strong { color: #f57c00; }
+
+    @media print {
+      body { background: #fff; padding: 20px; }
+      .actions, .legend { display: none; }
+      .key-card { break-inside: avoid; border: 1.5px solid #ddd; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🔑 Danh Sách Key Lưu Bút</h1>
+  <p>Mỗi key chỉ dùng được <strong>1 lần</strong> để thêm lời nhắn vào trang <em>Thanh Xuân Của Chúng Ta</em>.<br/>
+  Phân phát cho từng thành viên trước khi chia sẻ link website.</p>
+</div>
+
+<div class="stats">
+  Còn <strong id="remainCount">36</strong> / 36 key chưa sử dụng
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot dot-unused"></div> Chưa dùng</div>
+  <div class="legend-item"><div class="dot dot-used"></div> Đã dùng</div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" onclick="window.print()">🖨️ In danh sách</button>
+  <button class="btn btn-export" onclick="exportCSV()">📥 Xuất CSV</button>
+  <button class="btn btn-danger" onclick="resetAll()">🔄 Reset tất cả key</button>
+</div>
+
+<div class="note">
+  <strong>⚠️ Lưu ý:</strong> Trang này kiểm tra key đã dùng qua <code>localStorage</code> của trình duyệt.
+  Nếu bạn mở trên trình duyệt khác hoặc xóa cache, trạng thái "đã dùng" có thể reset.
+  Để quản lý tốt hơn, hãy tự đánh dấu tay ai đã nhận key nào bên dưới.
+</div>
+
+<div class="grid" id="keyGrid"></div>
+
+<script>
+const KEYS = [
+  'TX-A1B2-C3D4', 'TX-E5F6-G7H8', 'TX-I9J0-K1L2',
+  'TX-M3N4-O5P6', 'TX-Q7R8-S9T0', 'TX-U1V2-W3X4',
+  'TX-Y5Z6-A7B8', 'TX-C9D0-E1F2', 'TX-G3H4-I5J6',
+  'TX-K7L8-M9N0', 'TX-O1P2-Q3R4', 'TX-S5T6-U7V8',
+  'TX-W9X0-Y1Z2', 'TX-A3B4-C5D6', 'TX-E7F8-G9H0',
+  'TX-I1J2-K3L4', 'TX-M5N6-O7P8', 'TX-Q9R0-S1T2',
+  'TX-U3V4-W5X6', 'TX-Y7Z8-A9B0', 'TX-C1D2-E3F4',
+  'TX-G5H6-I7J8', 'TX-K9L0-M1N2', 'TX-O3P4-Q5R6',
+  'TX-S7T8-U9V0', 'TX-W1X2-Y3Z4', 'TX-A5B6-C7D8',
+  'TX-E9F0-G1H2', 'TX-I3J4-K5L6', 'TX-M7N8-O9P0',
+  'TX-Q1R2-S3T4', 'TX-U5V6-W7X8', 'TX-Y9Z0-A1B2',
+  'TX-C3D4-E5F6', 'TX-G7H8-I9J0', 'TX-K1L2-M3N4'
+];
+
+// Owners manually assigned (tuỳ chỉnh)
+const OWNERS = [
+  'Thanh Bình','Thu Ngân','Lệ Chi','Hoàng Dũng','Đà Hội','Thu Thảo',
+  'An Bình','Linh Hà','Cậu Cả','Gia Huy','Bảo Châu','Xuân Bảo',
+  'Oanh Vũ','An An','Anh Kiệt','Hoàng Anh','Gia Hân','Thành viên 18',
+  'Thành viên 19','Thành viên 20','Thành viên 21','Thành viên 22','Thành viên 23',
+  'Thành viên 24','Thành viên 25','Thành viên 26','Thành viên 27','Thành viên 28',
+  'Thành viên 29','Thành viên 30','Thành viên 31','Thành viên 32','Thành viên 33',
+  'Thành viên 34','Thành viên 35','Thành viên 36'
+];
+
+function getUsed() {
+  try { return JSON.parse(localStorage.getItem('tx_used_keys') || '[]'); }
+  catch { return []; }
+}
+
+function render() {
+  const used = getUsed();
+  const grid = document.getElementById('keyGrid');
+  grid.innerHTML = '';
+  let remaining = 0;
+
+  KEYS.forEach((key, i) => {
+    const isUsed = used.includes(key);
+    if (!isUsed) remaining++;
+
+    const card = document.createElement('div');
+    card.className = 'key-card';
+    card.style.opacity = isUsed ? '0.5' : '1';
+    card.innerHTML = `
+      <span class="key-num">#${String(i+1).padStart(2,'0')}</span>
+      <span class="key-icon">${isUsed ? '🔒' : '🔑'}</span>
+      <span class="key-value">${key}</span>
+      <span class="key-status ${isUsed ? 'used' : ''}">${isUsed ? 'Đã dùng' : 'Còn trống'}</span>
+      <span class="key-owner">${OWNERS[i] || ''}</span>
+    `;
+    // Click để copy
+    card.style.cursor = 'pointer';
+    card.title = 'Click để copy key';
+    card.addEventListener('click', () => {
+      navigator.clipboard.writeText(key).then(() => {
+        const orig = card.querySelector('.key-status').textContent;
+        if (!isUsed) {
+          card.querySelector('.key-status').textContent = '✅ Đã copy!';
+          setTimeout(() => card.querySelector('.key-status').textContent = orig, 1500);
+        }
+      });
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('remainCount').textContent = remaining;
+}
+
+function resetAll() {
+  if (!confirm('Reset sẽ xoá toàn bộ lịch sử key đã dùng trong trình duyệt này. Tiếp tục?')) return;
+  localStorage.removeItem('tx_used_keys');
+  render();
+}
+
+function exportCSV() {
+  const used = getUsed();
+  let csv = 'STT,Key,Chủ nhân,Trạng thái\n';
+  KEYS.forEach((k, i) => {
+    csv += `${i+1},${k},${OWNERS[i] || ''},${used.includes(k) ? 'Đã dùng' : 'Chưa dùng'}\n`;
+  });
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\ufeff' + csv);
+  a.download = 'thanh-xuan-keys.csv';
+  a.click();
+}
+
+render();
+// Tự refresh trạng thái mỗi 5s (nếu mở song song với tab website)
+setInterval(render, 5000);
+</script>
+</body>
+</html>
